@@ -281,6 +281,11 @@ def connect_mysql(host, user, pw, db):
     '''Creates and returns a db connection and cursor.'''
     connection = MySQLdb.connect(host=host, user=user, passwd=pw, db=db)
     cursor = SSCursor(connection)
+
+    rv = cursor.execute('SET TRANSACTION ISOLATION LEVEL READ COMMITTED')
+    logger.info('Set transaction isolation to "READ COMMITTED": %r' % rv)
+    cursor.execute('BEGIN')
+
     #
     # Use utf-8 encoding for strings
     #
@@ -2923,9 +2928,6 @@ OPTIONALLY ENCLOSED BY '"' ESCAPED BY '\\\\';
         if self.show_window:
             disp_header = ["Table", "Statement"]
             disp_columns = []
-        if self.db_type == DB_MYSQL:
-            self.cursor.execute('SET TRANSACTION ISOLATION LEVEL READ COMMITTED')
-            self.cursor.execute('BEGIN')
         try:
             zeros_for_nan = False
             measurements = workspace.measurements
