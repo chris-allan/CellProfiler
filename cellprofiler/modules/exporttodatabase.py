@@ -2923,6 +2923,9 @@ OPTIONALLY ENCLOSED BY '"' ESCAPED BY '\\\\';
         if self.show_window:
             disp_header = ["Table", "Statement"]
             disp_columns = []
+        if self.db_type == DB_MYSQL:
+            self.cursor.execute('SET TRANSACTION ISOLATION LEVEL READ COMMITTED')
+            self.cursor.execute('BEGIN')
         try:
             zeros_for_nan = False
             measurements = workspace.measurements
